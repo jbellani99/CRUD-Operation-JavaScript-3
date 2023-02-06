@@ -4,39 +4,84 @@ var html;
 
 getdata();
 table();
-function data_validate(){
+
+function check(temp) {
+    var flag =0;
+    // console.log("hi")
+    // console.log(temp)
+    if (localStorage.getItem("product") == null) {
+
+        product = [];
+        return true;
+    }
+    else {
+
+        data = JSON.parse(localStorage.getItem("product"));
+        data.forEach((e) => {
+            // console.log(e.id);
+            if (e.id == temp) {
+                // console.log("hi1")
+                // console.log("hi1")
+                // return false;
+                flag=1;
+
+            }
+            
+            
+        });
+
+       return flag;
+
+    }
+
+
+}
+function data_validate() {
     var pro_id = document.getElementById("pid").value;
     var pro_name = document.getElementById("pname").value;
     var pro_price = document.getElementById("pprice").value;
     var pro_description = document.getElementById("pdescription").value;
-    
-    if(pro_id == ''){
+
+
+    if (pro_id == '') {
 
         alert("Plaese enter id......");
         return false;
     }
-    if(pro_name == ''){
+
+    //console.log(check(pro_id))
+    var flag = check(pro_id)
+    // console.log(flag)
+
+    if (flag == 1)
+    {
+        alert("Please Enter valid product Id.......")
+        return false
+
+    }
+
+    if (pro_name == '') {
 
         alert("Plaese enter name......");
         return false;
     }
-   
-    if(pro_price == ''){
+
+    if (pro_price == '') {
 
         alert("Plaese enter Price....");
         return false;
     }
-    else if(pro_price < 100){
-        
+    else if (pro_price < 100) {
+        return false;
 
     }
-    if(pro_description == ''){
+    if (pro_description == '') {
 
         alert("Plaese enter Description....");
         return false;
     }
     return true;
-    
+
 
 
 }
@@ -73,36 +118,36 @@ function save() {
     var pro_price = document.getElementById("pprice").value;
     var pro_image = document.getElementById("pimage").files[0];
     var pro_description = document.getElementById("pdescription").value;
-     console.log(pro_name);
-    if(data_validate()){
-    if (pro_image != undefined) {
-        console.log(pro_name);
-        let reader = new FileReader();
-        reader.readAsDataURL(pro_image);
-        reader.addEventListener('load', () => {
+    // console.log(pro_name);
+    if (data_validate()) {
+        if (pro_image != undefined) {
+            //console.log(pro_name);
+            let reader = new FileReader();
+            reader.readAsDataURL(pro_image);
+            reader.addEventListener('load', () => {
 
-            var data = {
-                id:pro_id,
-                name: pro_name,
-                price: pro_price,
-                prod_image: reader.result,
-                description: pro_description
-            }
-            console.log(data);
-            product.push(data);
-            set_data();
+                var data = {
+                    id: pro_id,
+                    name: pro_name,
+                    price: pro_price,
+                    prod_image: reader.result,
+                    description: pro_description
+                }
+                // console.log(data);
+                product.push(data);
+                set_data();
 
-           
-            table();
-            location.reload();
 
-        });
+                table();
+                // location.reload();
 
-        
+            });
 
+
+
+        }
     }
-}
-       
+
 
 
 
@@ -128,7 +173,7 @@ function table() {
     </thead>
    `;
     for (let i = 0; i < product.length; i++) {
-        
+
         table1 = table1 + ` <tbody style="background-color:#ffffff; border:none"><tr>
             <td scope ="row">${product[i].id}</td>
             <td>${product[i].name}</td>
@@ -142,13 +187,13 @@ function table() {
     };
     table1 = table1 + `
     </table>`;
-    
+
     document.getElementById("show_data").innerHTML = table1;
 
 }
 
 
-function show(id){
+function show(id) {
 
 
     let table1 = ` <table class="data">
@@ -188,7 +233,7 @@ function show(id){
 function deletedata(index) {
 
     product.splice(index, 1);
-    console.log(product)
+    //console.log(product)
     table();
     set_data();
 
@@ -212,8 +257,8 @@ function data_update() {
     var pro_price = document.getElementById("pprice").value;
     var pro_image = document.getElementById("pimage").files[0];
     var pro_description = document.getElementById("pdescription").value;
-    
-   
+
+
     if (pro_image != undefined) {
 
         let reader = new FileReader();
@@ -247,23 +292,22 @@ function data_update() {
 }
 
 
-function search(){
+function search() {
 
     let search_data = document.getElementById("key");
-   
-    if(localStorage.getItem("product") == null)
-    {
-        product=[];
+
+    if (localStorage.getItem("product") == null) {
+        product = [];
 
     }
-    else{
+    else {
 
         product = JSON.parse(localStorage.getItem("product"));
-        
+
 
     }
-    product.forEach((element, index )=> {
-        if(search_data.value == element.id || element.name.toLowerCase().includes(search_data.value) ){
+    product.forEach((element, index) => {
+        if (search_data.value == element.id || element.name.toLowerCase().includes(search_data.value)) {
             let table1 = ` <table class="data">
     <thead>
     <tr>
@@ -277,9 +321,9 @@ function search(){
     </tr>
     </thead>
    `;
-   
-        
-        table1 = table1 + ` <tbody><tr>
+
+
+            table1 = table1 + ` <tbody><tr>
             <td scope ="row">${element.id}</td>
             <td>${element.name}</td>
             <td>${element.price}</td>
@@ -289,11 +333,11 @@ function search(){
             <td><button class="btn1" onclick="deletedata(${index}})">Delete</button></td>
             </tr> </tbody> `
 
-   
-    table1 = table1 + `
+
+            table1 = table1 + `
     </table>`;
-    document.getElementById("show_data").innerHTML = table1;
-            
+            document.getElementById("show_data").innerHTML = table1;
+
 
 
 
@@ -304,80 +348,75 @@ function search(){
 
 }
 
-function sort_high(){
+function sort_high() {
 
-    if(localStorage.getItem("product") == null)
-    {
-        product=[];
+    if (localStorage.getItem("product") == null) {
+        product = [];
 
     }
-    else{
+    else {
 
         product = JSON.parse(localStorage.getItem("product"));
 
     }
-    product.sort((a,b) =>{
+    product.sort((a, b) => {
 
-        return b.price-a.price;
+        return b.price - a.price;
 
     })
-    localStorage.setItem('product',JSON.stringify(product));
+    localStorage.setItem('product', JSON.stringify(product));
     table();
 
 
 
 }
 
-function sort_low(){
+function sort_low() {
 
 
 
-    if(localStorage.getItem("product") == null)
-    {
-        product=[];
+    if (localStorage.getItem("product") == null) {
+        product = [];
 
     }
-    else{
+    else {
 
         product = JSON.parse(localStorage.getItem("product"));
 
     }
-    product.sort((a,b) =>{
+    product.sort((a, b) => {
 
-        return a.price-b.price;
+        return a.price - b.price;
 
     })
-    localStorage.setItem('product',JSON.stringify(product));
+    localStorage.setItem('product', JSON.stringify(product));
     table();
 
 
 
 }
 
-function sort_name(){
+function sort_name() {
 
-    if(localStorage.getItem("product") == null)
-    {
-        product=[];
+    if (localStorage.getItem("product") == null) {
+        product = [];
 
     }
-    else{
+    else {
 
         product = JSON.parse(localStorage.getItem("product"));
 
     }
-    product.sort((a,b) =>{
+    product.sort((a, b) => {
 
-        let data_a= a.name.toLowerCase();
-        let data_b= b.name.toLowerCase();
-        if(data_a<data_b)
-        {
+        let data_a = a.name.toLowerCase();
+        let data_b = b.name.toLowerCase();
+        if (data_a < data_b) {
 
             return -1;
 
         }
-        if(data_a>data_b)
-        {
+        if (data_a > data_b) {
 
             return 1;
 
@@ -385,7 +424,7 @@ function sort_name(){
         return 0;
 
     })
-    localStorage.setItem('product',JSON.stringify(product));
+    localStorage.setItem('product', JSON.stringify(product));
     table();
 
 
